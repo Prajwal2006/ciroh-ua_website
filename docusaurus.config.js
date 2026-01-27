@@ -1,16 +1,29 @@
 import { themes as prismThemes } from "prism-react-renderer";
+import dotenv from 'dotenv';
 
-const baseUrl = "/local/";
+dotenv.config();
+
+const baseUrl = "/";
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: "CIROH DocuHub",
+  title: "CIROH Hub",
   tagline: "Documenting Water Research in the Digital Age",
   staticDirectories: ["static", "img"],
   url: "http://ciroh.org",
   baseUrl: baseUrl,
-  onBrokenLinks: "throw",
+  onBrokenLinks: "ignore",
   favicon: "img/logos/docuhub.png",
+
+  customFields: {
+    apiBaseUrl:
+      process.env.REACT_APP_API_BASE_URL ||
+      process.env.VITE_API_BASE_URL ||
+      'https://67h5z9ih7j.execute-api.us-east-1.amazonaws.com/default',
+    onBrokenMarkdownLinks: "warn",
+    onBrokenMarkdownImages: "warn",
+    githubProjectToken: process.env.GITHUB_PROJECT_TOKEN,
+  },
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -24,10 +37,7 @@ const config = {
   },
 
   markdown: {
-    hooks: {
-    onBrokenMarkdownLinks: "warn",
-    onBrokenMarkdownImages: "warn",
-    }
+    mermaid: true,
   },
 
   // Even if you don't use internalization, you can use this field to set useful
@@ -42,10 +52,10 @@ const config = {
       "classic",
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        gtag: {
-          trackingID: 'G-7KD31X6H62',
-          anonymizeIP: true,
-        },
+        
+        // gtag: process.env.NODE_ENV === 'production'
+        //   ? { trackingID: 'G-7KD31X6H62', anonymizeIP: true }
+        //   : undefined,
         blog: false, // Blogs and its settings are now in the custom blog plugin below. Its because we have tags based filters in community impact page. Those filters are coming from Blog posts.
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
@@ -77,13 +87,13 @@ const config = {
       './plugins/plugin-content-blog.js', 
       {
         id: "blog",
-        blogTitle: "DocuHub blog!",
-        blogDescription: "A DocuHub powered blog!",
+        blogTitle: "CIROH Hub blog!",
+        blogDescription: "A CIROH Hub powered blog!",
         postsPerPage: "ALL", // Display all posts on a single page
         path: "blog", // Path to the blog posts
         authorsMapPath: "authors.yaml", // Path to the authors' mapping file
         blogSidebarCount: "ALL",
-        blogSidebarTitle: "DocuHub Blog",
+        blogSidebarTitle: "CIROH Hub Blog",
       }
     ],
 
@@ -92,8 +102,8 @@ const config = {
       './plugins/plugin-content-blog.js', 
       {
         id: "release-notes",
-        blogTitle: "DocuHub release notes!",
-        blogDescription: "A quick glance at what's new in DocuHub.",
+        blogTitle: "CIROH Hub release notes!",
+        blogDescription: "A quick glance at what's new in CIROH Hub.",
         postsPerPage: "ALL", // Display all posts on a single page
         path: "release-notes", // Path to the blog posts
         routeBasePath: 'release-notes', // Slug for the blog
@@ -106,6 +116,11 @@ const config = {
       '@docusaurus/plugin-client-redirects',
       {
         redirects: [
+          // Resources page redirect
+          {
+            to: '/community_products',
+            from: '/resources',
+          },
           // Feedback page: grandfather in old Science Meeting survey links
           {
             to: '/feedback',
@@ -225,11 +240,7 @@ const config = {
             to: '/docs/services/cloudservices/google-cloud',
             from: '/docs/products/cloudservices/google cloud',
           },
-          // Contribute: older redirect (formerly used react-router-dom)
-          {
-            to: '/docs/contribute',
-            from: '/contribute',
-          },
+
         ],
         createRedirects(existingPath) {
           // JupyterHub redirects
@@ -299,21 +310,55 @@ const config = {
     // so it's the best option available for now.
     blogSidebarInjection: [
       {
-        sidebarTitle: "DocuHub Blog",
+        sidebarTitle: "CIROH Hub Blog",
         html: `
           <div style="font-size: 0.9rem; margin-bottom: 0.6rem; margin-right:1rem">
             Exclusive content for researchers utilizing CIROH Cyberinfrastructure resources.
             Share your insights, discoveries, and experiences with the hydrologic science community.
           </div>
-          <div style="font-size: 0.9rem; margin-right:1rem">
+          <div style="font-size: 0.9rem; margin-bottom: 1rem; margin-right:1rem">
             This blog platform is dedicated to highlighting the innovative work of researchers who
             have leveraged CIROH's computational tools and resources to advance water science.
             Your stories help demonstrate the value of our shared infrastructure and inspire new
             applications across the field.
           </div>
+          <a 
+            href="https://github.com/CIROH-UA/ciroh-ua_website/issues/new?template=docuhub-blog-post.md" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style="
+              display: inline-block;
+              padding: 0.5rem 1rem;
+              margin-bottom: 1rem;
+              background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+              color: white;
+              text-decoration: none;
+              border-radius: 6px;
+              font-size: 0.9rem;
+              font-weight: 500;
+              transition: all 0.2s ease;
+              box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
+            "
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(34, 197, 94, 0.3)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(34, 197, 94, 0.2)';"
+          >
+            Submit Your Blog
+          </a>
         `
       },
     ],
+
+    // URL for submitting a new product request (used in ProductCards component)
+    productIssueUrl: "https://github.com/CIROH-UA/ciroh-ua_website/issues/new?template=product-request.md",
+
+    // Centralized external links used across pages/components
+    externalLinks: {
+      zoteroLogin: "https://www.zotero.org/user/login",
+      feedbackForm: "https://forms.office.com/r/5ww7qRWwwf",
+    },
+
+    // Optional links for contribution CTAs
+  blogIdeaUrl: "https://github.com/CIROH-UA/ciroh-ua_website/issues/new?template=docuhub-blog-post.md",
 
   },
 
@@ -324,7 +369,7 @@ const config = {
       /*announcementBar: {
         id: 'scimeet25_survey_notice',
         content:
-          '🔧 Do you have any thoughts on CIROH DocuHub or Portal? We\'d love to hear from you! <a target="_blank" rel="noopener noreferrer" href="'+baseUrl+'scimeet25survey">Take the DocuHub/Portal User Survey here</a>.',
+          '🔧 Do you have any thoughts on CIROH Hub or Portal? We\'d love to hear from you! <a target="_blank" rel="noopener noreferrer" href="'+baseUrl+'scimeet25survey">Take the CIROH Hub/Portal User Survey here</a>.',
         backgroundColor: '#0081d2ff',
         textColor: '#fff',
         isCloseable: true,
@@ -345,39 +390,64 @@ const config = {
         // ... other stylesheets
       ],
       navbar: {
-        title: "DocuHub",
+        title: "CIROH Hub",
         logo: {
           alt: "CIROH Logo",
           src: "img/logos/docuhub.png",
         },
         items: [
           {
-            type: "doc",
-            docId: "products/intro",
-            label: "Products",
+            label: "About CIROH",
             position: "left",
+            items: [
+              {
+                type: "doc",
+                docId: "policies/intro",
+                label: "Policies",
+              },
+              {
+                href: "/working-groups",
+                label: "Working Groups",
+              },
+            ],
           },
           {
-            type: "doc",
-            docId: "services/intro",
-            label: "Services",
+            label: "Research & Innovation",
             position: "left",
+            items: [
+              {
+                href: "/publications",
+                label: "Publications",
+              },
+              {
+                type: "doc",
+                docId: "products/intro",
+                label: "Softwares",
+              },
+              {
+                type: "doc",
+                docId: "services/intro",
+                label: "Services",
+              },
+              {
+                href: "/community_products",
+                label: "Community Products",
+              },
+            ],
           },
           {
-            type: "doc",
-            docId: "policies/intro",
-            label: "Policies",
+            label: "Community & Collaboration",
             position: "left",
-          },
-          {
-            href: "https://portal.ciroh.org/", // Research portal URL
-            label: "CIROH Portal",
-            position: "left",
-          },
-          {
-            href: "/impact",
-            label: "Community Impact",
-            position: "right",
+            items: [
+              {
+                href: "/impact",
+                label: "Community Impact",
+              },
+              {
+                href: "/contribute",
+                label: "Contribute",
+              },
+            ],
           },
           {
             href: "/blog",
@@ -390,9 +460,8 @@ const config = {
             position: "right",
           },
           {
-            href: "/release-notes",
-            label: "Release Notes",
-            position: "right",
+            type: 'custom-githubAuth',
+            position: 'right',
           },
         ],
       },
@@ -403,8 +472,8 @@ const config = {
             title: 'Quick Links',
             items: [
               {
-                label: 'CIROH Portal',
-                href: 'http://portal.ciroh.org/'
+                label: 'Community Products',
+                href: '/community_products'
               },
               {
                 label: 'Contact Us',
@@ -412,11 +481,15 @@ const config = {
               },
               {
                 label: 'Contribute',
-                href: '/docs/contribute'
+                href: '/contribute'
               },
               {
                 label: 'Feedback',
                 href: 'https://forms.office.com/r/5ww7qRWwwf'
+              },
+              {
+                label: 'Release Notes',
+                href: '/release-notes'
               },
             ]
           },
@@ -436,7 +509,7 @@ const config = {
                 href: 'https://ciroh.ua.edu/contact-us/'
               },
               {
-                label: 'DocuHub Repository',
+                label: 'CIROH Hub Repository',
                 href: 'https://github.com/CIROH-UA/ciroh-ua_website'
               },
             ]

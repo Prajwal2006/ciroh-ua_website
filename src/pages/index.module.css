@@ -2,56 +2,198 @@
  * CSS files with the .module.css suffix will be treated as CSS modules
  * and scoped locally.
  */
- .heroBanner {
-  padding: 4rem 0;
-  text-align: center;
+
+/* Hero Banner */
+.heroBanner {
   position: relative;
   overflow: hidden;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+/* Logo Container */
+.logoContainer {
+  perspective: 1000px;
 }
 
-.buttons {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.flexContainer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 1200px;
-  margin: 0 auto;
+.logoWrapper {
   position: relative;
 }
 
-.flexitem1 {
-  text-align: center;
+.glowCircle {
+  animation: glowPulse 4s ease-in-out infinite;
 }
 
-.flexitem1:first-child {
-  margin-bottom: 20px;
+.logoBg {
+  animation: logoFloat 4s ease-in-out infinite;
+  transition: transform 0.3s ease;
+
 }
 
-.flexitem1 img {
-  max-width: 200px;
-  width: 100%;
-  height: auto;
+.logoBg:hover {
+  transform: scale(1.05);
 }
 
-/* for smaller screens */
+/* LIGHT MODE — dark blue circle */
+[data-theme="light"] .logoBg {
+  background-color: #0a1b3d !important; /* deep navy */
+  box-shadow: 0 0 40px rgba(0, 30, 90, 0.5) !important;
+}
+
+/* DARK MODE — white circle */
+[data-theme="dark"] .logoBg {
+  background-color: #ffffff !important;
+  box-shadow: 0 0 40px rgba(100, 200, 255, 0.5) !important;
+}
+
+.logoImage {
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+}
+
+/* Animations */
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes logoFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+/* DARK MODE — FORCE WHITE TEXT IN HERO SECTION
+[data-theme='dark'] .heroBanner h1,
+[data-theme='dark'] .heroBanner h2,
+[data-theme='dark'] .heroBanner p,
+[data-theme='dark'] .heroBanner span,
+[data-theme='dark'] .heroBanner div {
+  color: white;
+} */
+
+/* Title and Subtitle Styles */
+.heroTitle {
+  animation: fadeInLeft 0.8s ease-out forwards;
+}
+
+.heroSubtitle {
+  animation: fadeInLeft 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.heroDescription {
+  animation: fadeInLeft 0.8s ease-out 0.4s forwards;
+  opacity: 0;
+}
+
+/* CTA Buttons */
+.ctaButton {
+  animation: fadeInLeft 0.8s ease-out 0.6s forwards;
+  opacity: 0;
+}
+
+.ctaButton:hover {
+  transform: translateY(-2px);
+}
+
+.secondaryButton {
+  animation: fadeInLeft 0.8s ease-out 0.7s forwards;
+  opacity: 0;
+}
+
+.secondaryButton:hover {
+  transform: translateY(-2px);
+}
+
+/* Fade In Animations */
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive adjustments for small devices */
+@media (max-width: 640px) {
+  .heroTitle {
+    animation-delay: 0s;
+  }
+
+  .heroSubtitle {
+    animation-delay: 0.15s;
+  }
+
+  .heroDescription {
+    animation-delay: 0.3s;
+  }
+
+  .ctaButton {
+    animation-delay: 0.45s;
+  }
+
+  .secondaryButton {
+    animation-delay: 0.55s;
+  }
+}
+
+/* Responsive adjustments for tablets */
+@media (max-width: 1024px) {
+  .heroBanner {
+    min-height: auto;
+    padding: 2rem 0;
+  }
+}
+
 @media (max-width: 768px) {
-  .flexContainer {
-    gap: 20px;
+  .heroBanner {
+    padding: 1rem 0;
   }
+}
 
-  .flexitem1 img {
-    max-width: 150px;
-  }
+/* Small animation utilities matching test.html (Tailwind prefix used in project is `tw-`) */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-20px) scale(1.05); }
+}
+
+@keyframes floatDelayed {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes pingSlow {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.3; }
+  100% { transform: scale(1.2); opacity: 0; }
+}
+
+.tw-animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.tw-animate-float-delayed {
+  animation: floatDelayed 8s ease-in-out infinite;
+}
+
+.tw-animate-ping-slow {
+  animation: pingSlow 3s cubic-bezier(0,0,0.2,1) infinite;
+}
+
+/* Ensure canvas covers viewport if a global canvas fallback is used */
+.tw-constellation-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
 }
